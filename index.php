@@ -58,27 +58,29 @@ if (!file_exists($dataFile)) {
             flex-direction: column;
             align-items: stretch;
             gap: 1rem;
-            padding: 0 1rem 2rem;
+            padding: 0 1.4rem 2.6rem;
         }
         .menu-list {
             list-style: none;
             margin: 0;
             padding: 0;
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
-            gap: 1rem;
+            display: flex;
+            flex-direction: column;
+            gap: 1.2rem;
         }
         .menu-item {
-            background: linear-gradient(145deg, rgba(255,255,255,0.08), rgba(255,255,255,0.18));
-            border-radius: 16px;
-            padding: 1rem;
-            border: 1px solid rgba(255,255,255,0.1);
-            box-shadow: 0 14px 30px rgba(0,0,0,0.25);
+            background: linear-gradient(145deg, rgba(255,255,255,0.1), rgba(255,255,255,0.22));
+            border-radius: 18px;
+            padding: 1.2rem 1.6rem;
+            border: 1px solid rgba(255,255,255,0.12);
+            box-shadow: 0 18px 34px rgba(0,0,0,0.28);
             position: relative;
             overflow: hidden;
-            animation: float 6s ease-in-out infinite;
+            display: flex;
+            align-items: center;
+            gap: 1.4rem;
+            min-height: 130px;
         }
-        .menu-item:nth-child(odd) { animation-delay: 0.7s; }
         .menu-item::before {
             content: '';
             position: absolute;
@@ -88,20 +90,26 @@ if (!file_exists($dataFile)) {
             transform: rotate(12deg);
         }
         .menu-item h3 {
-            margin: 0;
-            font-size: 1.3rem;
-            letter-spacing: 0.6px;
+            margin: 0 0 0.4rem 0;
+            font-size: 2.1rem;
+            letter-spacing: 0.8px;
         }
         .menu-item .price {
-            font-size: 1.8rem;
-            font-weight: 800;
+            font-size: 2.8rem;
+            font-weight: 900;
             color: var(--gold);
-            text-shadow: 0 6px 12px rgba(0,0,0,0.4);
+            text-shadow: 0 10px 16px rgba(0,0,0,0.5);
+            min-width: 170px;
+            text-align: right;
         }
         .menu-item .desc {
             color: #f1e8ff;
-            margin-top: 0.35rem;
-            min-height: 2.4rem;
+            font-size: 1.1rem;
+            margin-top: 0.2rem;
+            min-height: 2.2rem;
+        }
+        .menu-item .content {
+            flex: 1;
         }
         .snowflake {
             position: absolute;
@@ -116,6 +124,15 @@ if (!file_exists($dataFile)) {
         @keyframes float {
             0%,100% { transform: translateY(0px); }
             50% { transform: translateY(-6px); }
+        }
+        @keyframes wiggle {
+            0% { transform: rotate(0deg) scale(1); }
+            15% { transform: rotate(-4deg) scale(1.02); }
+            30% { transform: rotate(4deg) scale(1.03); }
+            45% { transform: rotate(-3deg) scale(1.02); }
+            60% { transform: rotate(3deg) scale(1.02); }
+            75% { transform: rotate(-2deg) scale(1.01); }
+            100% { transform: rotate(0deg) scale(1); }
         }
         .carousel {
             flex: 1;
@@ -204,9 +221,11 @@ if (!file_exists($dataFile)) {
                 const li = document.createElement('li');
                 li.className = 'menu-item';
                 li.innerHTML = `
-                    <h3>${item.name}</h3>
+                    <div class="content">
+                        <h3>${item.name}</h3>
+                        <div class="desc">${item.description || ''}</div>
+                    </div>
                     <div class="price">${item.price}</div>
-                    <div class="desc">${item.description || ''}</div>
                 `;
                 menuList.appendChild(li);
             });
@@ -218,6 +237,17 @@ if (!file_exists($dataFile)) {
             items.forEach((item, index) => {
                 item.style.animation = 'pop 1s ease';
                 item.style.animationDelay = `${index * 80}ms`;
+            });
+        }
+
+        function playfulWiggle() {
+            const items = Array.from(document.querySelectorAll('.menu-item'));
+            items.forEach((item, index) => {
+                item.classList.remove('wiggle');
+                void item.offsetWidth;
+                item.style.animationDelay = `${index * 60}ms`;
+                item.classList.add('wiggle');
+                setTimeout(() => item.classList.remove('wiggle'), 1100);
             });
         }
 
@@ -264,12 +294,9 @@ if (!file_exists($dataFile)) {
                         menuPanel.classList.add('visible');
                     }, 4000);
                 } else {
-                    menuPanel.classList.toggle('hidden');
-                    menuPanel.classList.toggle('visible');
-                    setTimeout(() => {
-                        menuPanel.classList.toggle('hidden');
-                        menuPanel.classList.toggle('visible');
-                    }, 3200);
+                    menuPanel.classList.add('visible');
+                    menuPanel.classList.remove('hidden');
+                    playfulWiggle();
                 }
             }, 6500);
         }
@@ -295,6 +322,7 @@ if (!file_exists($dataFile)) {
                 60% { transform: scale(1.05) rotate(2deg); opacity: 1; }
                 100% { transform: scale(1) rotate(0deg); }
             }
+            .wiggle { animation: wiggle 1s ease; }
         `;
         document.head.appendChild(style);
 
