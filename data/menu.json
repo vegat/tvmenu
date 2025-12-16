@@ -1,0 +1,82 @@
+{
+  "updated_at": 1720000000,
+  "items": [
+    {
+      "id": "item_popcorn_maly",
+      "name": "Popcorn mały",
+      "price": "8PLN",
+      "description": "",
+      "active": true
+    },
+    {
+      "id": "item_popcorn_duzy",
+      "name": "Popcorn duży",
+      "price": "15PLN",
+      "description": "",
+      "active": true
+    },
+    {
+      "id": "item_pierog",
+      "name": "Pieróg (szt)",
+      "price": "4PLN",
+      "description": "",
+      "active": true
+    },
+    {
+      "id": "item_lizak",
+      "name": "Lizak",
+      "price": "5PLN",
+      "description": "",
+      "active": true
+    },
+    {
+      "id": "item_pianki",
+      "name": "Pianki",
+      "price": "5PLN",
+      "description": "",
+      "active": true
+    },
+    {
+      "id": "item_grzaniec",
+      "name": "Grzaniec",
+      "price": "15PLN",
+      "description": "",
+      "active": true
+    },
+    {
+      "id": "item_goraca_czekolada",
+      "name": "Gorąca czekolada",
+      "price": "15PLN",
+      "description": "",
+      "active": true
+    },
+    {
+      "id": "item_herbata_swiateczna",
+      "name": "Herbata świąteczna",
+      "price": "15PLN",
+      "description": "",
+      "active": true
+    },
+    {
+      "id": "item_barszcz",
+      "name": "Barszcz",
+      "price": "12PLN",
+      "description": "",
+      "active": true
+    },
+    {
+      "id": "item_ciastko",
+      "name": "Ciastko",
+      "price": "6PLN",
+      "description": "",
+      "active": true
+    },
+    {
+      "id": "item_kawa_zimowa",
+      "name": "Kawa zimowa",
+      "price": "15PLN",
+      "description": "",
+      "active": true
+    }
+  ]
+}
