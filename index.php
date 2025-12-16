@@ -56,7 +56,7 @@ if (!file_exists($dataFile)) {
             flex: 1;
             display: flex;
             flex-direction: column;
-            align-items: stretch;
+            align-items: center;
             gap: 1rem;
             padding: 0 1.4rem 2.6rem;
         }
@@ -66,7 +66,9 @@ if (!file_exists($dataFile)) {
             padding: 0;
             display: flex;
             flex-direction: column;
+            align-items: center;
             gap: 1.2rem;
+            width: 100%;
         }
         .menu-item {
             background: linear-gradient(145deg, rgba(255,255,255,0.1), rgba(255,255,255,0.22));
@@ -80,6 +82,7 @@ if (!file_exists($dataFile)) {
             align-items: center;
             gap: 1.4rem;
             min-height: 130px;
+            width: min(1080px, 100%);
         }
         .menu-item::before {
             content: '';
@@ -101,6 +104,8 @@ if (!file_exists($dataFile)) {
             text-shadow: 0 10px 16px rgba(0,0,0,0.5);
             min-width: 170px;
             text-align: right;
+            animation: priceWave 3.8s ease-in-out infinite;
+            animation-delay: calc(var(--i) * 120ms);
         }
         .menu-item .desc {
             color: #f1e8ff;
@@ -168,12 +173,6 @@ if (!file_exists($dataFile)) {
             background: rgba(255,255,255,0.12);
             box-shadow: 0 18px 28px rgba(0,0,0,0.35);
         }
-        footer {
-            text-align: center;
-            padding: 0.5rem;
-            color: #e8d8ff;
-            font-size: 0.9rem;
-        }
         .badge {
             display: inline-flex;
             align-items: center;
@@ -204,7 +203,6 @@ if (!file_exists($dataFile)) {
                 </div>
             </div>
         </div>
-        <footer>Menu odświeża się automatycznie, gdy dodasz nowe pozycje w panelu. ✨</footer>
         <div id="snow"></div>
     </div>
 
@@ -230,6 +228,7 @@ if (!file_exists($dataFile)) {
                 menuList.appendChild(li);
             });
             animateItems();
+            ripplePrices();
         }
 
         function animateItems() {
@@ -237,6 +236,7 @@ if (!file_exists($dataFile)) {
             items.forEach((item, index) => {
                 item.style.animation = 'pop 1s ease';
                 item.style.animationDelay = `${index * 80}ms`;
+                item.style.setProperty('--i', index);
             });
         }
 
@@ -248,6 +248,13 @@ if (!file_exists($dataFile)) {
                 item.style.animationDelay = `${index * 60}ms`;
                 item.classList.add('wiggle');
                 setTimeout(() => item.classList.remove('wiggle'), 1100);
+            });
+        }
+
+        function ripplePrices() {
+            const prices = document.querySelectorAll('.price');
+            prices.forEach((price, index) => {
+                price.style.animationDelay = `${index * 120}ms`;
             });
         }
 
@@ -299,6 +306,11 @@ if (!file_exists($dataFile)) {
                     playfulWiggle();
                 }
             }, 6500);
+
+            setInterval(() => {
+                playfulWiggle();
+                ripplePrices();
+            }, 12000);
         }
 
         function createSnowflakes() {
@@ -323,6 +335,11 @@ if (!file_exists($dataFile)) {
                 100% { transform: scale(1) rotate(0deg); }
             }
             .wiggle { animation: wiggle 1s ease; }
+            @keyframes priceWave {
+                0% { transform: translateY(0) scale(1); text-shadow: 0 10px 16px rgba(0,0,0,0.5); }
+                40% { transform: translateY(-4px) scale(1.05); text-shadow: 0 16px 20px rgba(0,0,0,0.55); }
+                100% { transform: translateY(0) scale(1); text-shadow: 0 10px 16px rgba(0,0,0,0.5); }
+            }
         `;
         document.head.appendChild(style);
 
