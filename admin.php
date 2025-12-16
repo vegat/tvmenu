@@ -132,6 +132,17 @@
             return res.json();
         }
 
+        function formatPriceDisplay(value) {
+            const raw = String(value ?? '').trim();
+            const numberMatch = raw.match(/[0-9]+(?:[.,][0-9]+)?/);
+            const currencyMatch = raw.match(/[^\d.,\s]+/);
+            const currency = (currencyMatch ? currencyMatch[0] : 'PLN').toUpperCase();
+            const numeric = numberMatch ? numberMatch[0].replace(',', '.') : '0';
+            const parsed = parseFloat(numeric);
+            const amount = Number.isFinite(parsed) ? (Number.isInteger(parsed) ? parsed.toString() : parsed.toFixed(2).replace(/\.00$/, '')) : raw;
+            return `${amount} ${currency}`;
+        }
+
         function showToast(message) {
             const toast = document.getElementById('toast');
             toast.textContent = message;
@@ -146,7 +157,7 @@
                 const tr = document.createElement('tr');
                 tr.innerHTML = `
                     <td>${item.name}</td>
-                    <td><strong>${item.price}</strong></td>
+                    <td><strong>${formatPriceDisplay(item.price)}</strong></td>
                     <td>${item.description || ''}</td>
                     <td><span class="pill ${item.active ? 'active' : 'inactive'}">${item.active ? 'Aktywna' : 'Wstrzymana'}</span></td>
                     <td class="actions">

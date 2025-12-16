@@ -32,6 +32,17 @@ function save_data($file, $data)
     file_put_contents($file, json_encode($data, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE));
 }
 
+function normalize_price($price)
+{
+    $raw = trim((string)$price);
+    $numeric = preg_replace('/[^0-9.,]/', '', $raw);
+    $numeric = str_replace(',', '.', $numeric);
+    $numeric = $numeric === '' ? '0' : $numeric;
+    $number = is_numeric($numeric) ? (float)$numeric : 0;
+    $display = floor($number) == $number ? number_format($number, 0, '.', '') : rtrim(rtrim(number_format($number, 2, '.', ''), '0'), '.');
+    return $display . ' PLN';
+}
+
 function respond($payload, $code = 200)
 {
     http_response_code($code);
@@ -90,7 +101,7 @@ switch ($action) {
         $data['items'][] = [
             'id' => $id,
             'name' => $name,
-            'price' => $price,
+            'price' => normalize_price($price),
             'description' => $description,
             'active' => true
         ];

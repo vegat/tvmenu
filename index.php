@@ -83,6 +83,7 @@ if (!file_exists($dataFile)) {
             gap: 1.4rem;
             min-height: 130px;
             width: min(1080px, 100%);
+            will-change: transform;
         }
         .menu-item::before {
             content: '';
@@ -94,25 +95,54 @@ if (!file_exists($dataFile)) {
         }
         .menu-item h3 {
             margin: 0 0 0.4rem 0;
-            font-size: 2.1rem;
+            font-size: 2.3rem;
             letter-spacing: 0.8px;
+            will-change: transform;
+            animation: nameCycle 11s ease-in-out infinite;
+            animation-delay: calc(var(--i) * 140ms);
         }
         .menu-item .price {
-            font-size: 2.8rem;
-            font-weight: 900;
+            display: inline-flex;
+            align-items: flex-end;
+            gap: 0.35rem;
             color: var(--gold);
-            text-shadow: 0 10px 16px rgba(0,0,0,0.5);
-            min-width: 170px;
+            text-shadow: 0 10px 16px rgba(0,0,0,0.55);
+            min-width: 190px;
             text-align: right;
-            animation: priceWave 3.8s ease-in-out infinite;
-            animation-delay: calc(var(--i) * 120ms);
+            justify-content: flex-end;
+        }
+        .menu-item .price .amount {
+            font-size: 3.1rem;
+            font-weight: 900;
+            line-height: 1;
+            will-change: transform;
+            animation-name: priceFlow;
+            animation-duration: 9s;
+            animation-timing-function: ease-in-out;
+            animation-iteration-count: infinite;
+            animation-delay: var(--flow-delay, 0s);
+            animation-fill-mode: both;
+        }
+        .menu-item .price .currency {
+            font-size: 1.45rem;
+            font-weight: 800;
+            opacity: 0.95;
+            margin-bottom: 0.22rem;
+            letter-spacing: 1px;
+            will-change: transform;
+            animation-name: priceFlow;
+            animation-duration: 9s;
+            animation-timing-function: ease-in-out;
+            animation-iteration-count: infinite;
+            animation-delay: var(--flow-delay-currency, 0s);
+            animation-fill-mode: both;
         }
         .menu-item .desc {
             color: #f1e8ff;
             font-size: 1.1rem;
             margin-top: 0.2rem;
             min-height: 2.2rem;
-        }
+            }
         .menu-item .content {
             flex: 1;
         }
@@ -132,12 +162,24 @@ if (!file_exists($dataFile)) {
         }
         @keyframes wiggle {
             0% { transform: rotate(0deg) scale(1); }
-            15% { transform: rotate(-4deg) scale(1.02); }
-            30% { transform: rotate(4deg) scale(1.03); }
-            45% { transform: rotate(-3deg) scale(1.02); }
-            60% { transform: rotate(3deg) scale(1.02); }
-            75% { transform: rotate(-2deg) scale(1.01); }
+            15% { transform: rotate(-3deg) scale(1.02); }
+            30% { transform: rotate(3deg) scale(1.03); }
+            45% { transform: rotate(-2deg) scale(1.02); }
+            60% { transform: rotate(2deg) scale(1.02); }
+            75% { transform: rotate(-1deg) scale(1.01); }
             100% { transform: rotate(0deg) scale(1); }
+        }
+        @keyframes nameCycle {
+            0%, 100% { transform: scale(1); text-shadow: 0 3px 12px rgba(0,0,0,0.35); }
+            40% { transform: scale(1.02); text-shadow: 0 6px 16px rgba(0,0,0,0.4); }
+            60% { transform: scale(1.015); }
+        }
+        @keyframes priceFlow {
+            0% { transform: translateY(0px) scale(1); }
+            25% { transform: translateY(-3px) scale(1.015); }
+            50% { transform: translateY(0px) scale(1.01); }
+            75% { transform: translateY(3px) scale(1.008); }
+            100% { transform: translateY(0px) scale(1); }
         }
         .carousel {
             flex: 1;
@@ -213,17 +255,33 @@ if (!file_exists($dataFile)) {
         let lastUpdated = 0;
         let cycle = 0;
 
+        function formatPriceDisplay(value) {
+            const raw = String(value ?? '').trim();
+            const numberMatch = raw.match(/[0-9]+(?:[.,][0-9]+)?/);
+            const currencyMatch = raw.match(/[^\d.,\s]+/);
+            const currency = (currencyMatch ? currencyMatch[0] : 'PLN').toUpperCase();
+            const numeric = numberMatch ? numberMatch[0].replace(',', '.') : '0';
+            const parsed = parseFloat(numeric);
+            const amount = Number.isFinite(parsed) ? (Number.isInteger(parsed) ? parsed.toString() : parsed.toFixed(2).replace(/\.00$/, '')) : raw;
+            return { amount, currency };
+        }
+
         function renderMenu(items) {
             menuList.innerHTML = '';
-            items.forEach(item => {
+            items.forEach((item, index) => {
+                const { amount, currency } = formatPriceDisplay(item.price);
                 const li = document.createElement('li');
                 li.className = 'menu-item';
+                li.style.setProperty('--i', index);
                 li.innerHTML = `
                     <div class="content">
                         <h3>${item.name}</h3>
                         <div class="desc">${item.description || ''}</div>
                     </div>
-                    <div class="price">${item.price}</div>
+                    <div class="price" aria-label="${amount} ${currency}">
+                        <span class="amount">${amount}</span>
+                        <span class="currency">${currency}</span>
+                    </div>
                 `;
                 menuList.appendChild(li);
             });
@@ -237,6 +295,20 @@ if (!file_exists($dataFile)) {
                 item.style.animation = 'pop 1s ease';
                 item.style.animationDelay = `${index * 80}ms`;
                 item.style.setProperty('--i', index);
+                const name = item.querySelector('h3');
+                const amount = item.querySelector('.price .amount');
+                const currency = item.querySelector('.price .currency');
+                if (name) name.style.setProperty('--i', index);
+                if (amount) {
+                    amount.style.setProperty('--i', index);
+                    amount.style.setProperty('--flow-delay', `${(index * 0.14).toFixed(2)}s`);
+                }
+                if (currency) {
+                    currency.style.setProperty('--i', index);
+                    currency.style.setProperty('--flow-delay-currency', `${(index * 0.14 + 0.12).toFixed(2)}s`);
+                }
+                name?.classList.add('name-animate');
+                setTimeout(() => name?.classList.remove('name-animate'), 1200);
             });
         }
 
@@ -254,7 +326,10 @@ if (!file_exists($dataFile)) {
         function ripplePrices() {
             const prices = document.querySelectorAll('.price');
             prices.forEach((price, index) => {
-                price.style.animationDelay = `${index * 120}ms`;
+                price.style.setProperty('--i', index);
+                price.querySelectorAll('span').forEach(span => span.style.setProperty('--i', index));
+                price.classList.add('price-animate');
+                setTimeout(() => price.classList.remove('price-animate'), 1200);
             });
         }
 
@@ -310,6 +385,7 @@ if (!file_exists($dataFile)) {
             setInterval(() => {
                 playfulWiggle();
                 ripplePrices();
+                animateItems();
             }, 12000);
         }
 
@@ -335,10 +411,32 @@ if (!file_exists($dataFile)) {
                 100% { transform: scale(1) rotate(0deg); }
             }
             .wiggle { animation: wiggle 1s ease; }
-            @keyframes priceWave {
-                0% { transform: translateY(0) scale(1); text-shadow: 0 10px 16px rgba(0,0,0,0.5); }
-                40% { transform: translateY(-4px) scale(1.05); text-shadow: 0 16px 20px rgba(0,0,0,0.55); }
-                100% { transform: translateY(0) scale(1); text-shadow: 0 10px 16px rgba(0,0,0,0.5); }
+            .name-animate { animation: namePulse 1s cubic-bezier(0.19, 1, 0.22, 1); }
+            .price.price-animate .amount {
+                animation-name: priceFlow, pricePulse;
+                animation-duration: 9s, 1.1s;
+                animation-timing-function: ease-in-out, ease;
+                animation-iteration-count: infinite, 1;
+                animation-delay: var(--flow-delay, 0s), 0s;
+                animation-fill-mode: both;
+            }
+            .price.price-animate .currency {
+                animation-name: priceFlow, pricePulse;
+                animation-duration: 9s, 1.1s;
+                animation-timing-function: ease-in-out, ease;
+                animation-iteration-count: infinite, 1;
+                animation-delay: var(--flow-delay-currency, 0s), 0s;
+                animation-fill-mode: both;
+            }
+            @keyframes namePulse {
+                0% { transform: scale(0.97); }
+                55% { transform: scale(1.05); }
+                100% { transform: scale(1); }
+            }
+            @keyframes pricePulse {
+                0% { transform: translateY(3px) scale(0.99); }
+                50% { transform: translateY(-3px) scale(1.04); }
+                100% { transform: translateY(0) scale(1); }
             }
         `;
         document.head.appendChild(style);
