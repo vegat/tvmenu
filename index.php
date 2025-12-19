@@ -46,18 +46,18 @@ if (!file_exists($dataFile)) {
         }
         header h1 {
             font-family: 'Pacifico', cursive;
-            font-size: 2.8rem;
+            font-size: 3.2rem;
             margin: 0;
             color: var(--gold);
             text-shadow: 0 6px 16px rgba(0,0,0,0.4);
         }
-        header p { margin: 0.3rem 0 0; font-size: 1.05rem; letter-spacing: 0.5px; color: #f8f1ff; }
+        header p { margin: 0.3rem 0 0; font-size: 1.12rem; letter-spacing: 0.6px; color: #f8f1ff; }
         .menu-container {
             flex: 1;
             display: flex;
             flex-direction: column;
             align-items: center;
-            gap: 1rem;
+            gap: 0.8rem;
             padding: 0 1.4rem 2.6rem;
         }
         .menu-list {
@@ -67,13 +67,13 @@ if (!file_exists($dataFile)) {
             display: flex;
             flex-direction: column;
             align-items: center;
-            gap: 1.2rem;
+            gap: 0.8rem;
             width: 100%;
         }
         .menu-item {
             background: linear-gradient(145deg, rgba(255,255,255,0.1), rgba(255,255,255,0.22));
             border-radius: 18px;
-            padding: 1.2rem 1.6rem;
+            padding: 0.9rem 1.4rem;
             border: 1px solid rgba(255,255,255,0.12);
             box-shadow: 0 18px 34px rgba(0,0,0,0.28);
             position: relative;
@@ -81,7 +81,7 @@ if (!file_exists($dataFile)) {
             display: flex;
             align-items: center;
             gap: 1.4rem;
-            min-height: 130px;
+            min-height: 110px;
             width: min(1080px, 100%);
             will-change: transform;
         }
@@ -94,9 +94,9 @@ if (!file_exists($dataFile)) {
             transform: rotate(12deg);
         }
         .menu-item h3 {
-            margin: 0 0 0.4rem 0;
-            font-size: 2.3rem;
-            letter-spacing: 0.8px;
+            margin: 0 0 0.5rem 0;
+            font-size: 3rem;
+            letter-spacing: 0.9px;
             will-change: transform;
             animation: nameCycle 11s ease-in-out infinite;
             animation-delay: calc(var(--i) * 140ms);
@@ -104,15 +104,15 @@ if (!file_exists($dataFile)) {
         .menu-item .price {
             display: inline-flex;
             align-items: flex-end;
-            gap: 0.35rem;
+            gap: 0.5rem;
             color: var(--gold);
             text-shadow: 0 10px 16px rgba(0,0,0,0.55);
-            min-width: 190px;
+            min-width: 210px;
             text-align: right;
             justify-content: flex-end;
         }
         .menu-item .price .amount {
-            font-size: 3.1rem;
+            font-size: 3.3rem;
             font-weight: 900;
             line-height: 1;
             will-change: transform;
@@ -124,11 +124,11 @@ if (!file_exists($dataFile)) {
             animation-fill-mode: both;
         }
         .menu-item .price .currency {
-            font-size: 1.45rem;
+            font-size: 2.2rem;
             font-weight: 800;
             opacity: 0.95;
-            margin-bottom: 0.22rem;
-            letter-spacing: 1px;
+            margin-bottom: 0.24rem;
+            letter-spacing: 1.1px;
             will-change: transform;
             animation-name: priceFlow;
             animation-duration: 9s;
@@ -139,10 +139,10 @@ if (!file_exists($dataFile)) {
         }
         .menu-item .desc {
             color: #f1e8ff;
-            font-size: 1.1rem;
+            font-size: 1.2rem;
             margin-top: 0.2rem;
-            min-height: 2.2rem;
-            }
+            min-height: 1.6rem;
+        }
         .menu-item .content {
             flex: 1;
         }
